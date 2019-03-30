@@ -16,10 +16,10 @@ def rish
     loop do
         $stdout.print ENV['USER'],' ', ENV['PROMPT'] 
         line = $stdin.gets.strip 
-        command, *arguments = Shellwords.shellsplit(line)
+        command, *args = Shellwords.shellsplit(line)
 
         if COMMANDS[command]
-            COMMANDS[command].call(*arguments)
+            COMMANDS[command].call(*args)
         else
             pid = fork{
                 exec line
@@ -49,8 +49,8 @@ COMMANDS = {
     'exec' => lambda { |*command| exec *command}, #creates it's own process
 
     'export' => lambda { |args| #just like bash export
-    key, value = args.split('=')
-    ENV[key] = value
+    key, path = args.split('=')
+    ENV[key] = path
     }
 }
 
