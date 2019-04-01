@@ -6,28 +6,47 @@
 # Refer to LICENSE file for license information.
 
 require 'shellwords' #splits words for me cause I'm lazy
+require 'readline' #needed for tab completion
 
-
+Readline.completion_proc = proc do |input|
+    TABCOMPLETE.select { |name| name.start_with?(input) }
+end
 
 ##
 # Main Shell Code
 ##
 def rish
     loop do
-        $stdout.print ENV['USER'],' ', ENV['PROMPT'] 
-        line = $stdin.gets.strip 
-        command, *args = Shellwords.shellsplit(line)
+        $stdout.print ENV['USER'] 
+        input = Readline.readline(" =>", false)
 
+        command, *args = Shellwords.shellsplit(input)  
+        
         if COMMANDS[command]
             COMMANDS[command].call(*args)
         else
             pid = fork{
-                exec line
+                exec command, *args
             }
             Process.wait pid
         end
     end
 end
+
+##
+# Work In Progress, Will have to write the AUX args into this.
+##
+def ps
+    pids = Dir.glob("/proc/[0-9]*")
+    puts "PID\tCMD"
+    puts "-" * 15
+    pids.each do |pid|
+        cmd = File.read(pid + "/comm")
+        pid = pid.scan(/\d+/).first
+        puts "#{pid}\t#{cmd}"
+    end
+end
+
 
 ##
 # Text Before Prompt
@@ -44,9 +63,15 @@ end
 # Built In Commands. Not ones stored in bin. But ones that can modify the shell
 ##
 COMMANDS = {
-    'cd' => lambda { |dir| Dir.chdir(dir)}, #change directory obviously
+    'cd' => lambda { |directory| Dir.chdir(directory)},
     'exit' => lambda { |code = 0| exit(code.to_i)}, 
-    'exec' => lambda { |*command| exec *command}, #creates it's own process
+    'exec' => lambda { |*command| exec *command},
+    'echo' => lambda { |*words| puts(*words)},
+    'kill' => lambda { |*program| Process.kill(*program, pid)},
+    'ps' => lambda { ps() },
+
+
+
 
     'export' => lambda { |args| #just like bash export
     key, path = args.split('=')
@@ -54,7 +79,13 @@ COMMANDS = {
     }
 }
 
-ENV['PROMPT'] = '=> '
+TABCOMPLETE = [
+    'cd',
+    'exit',
+    'exec',
+    'export',
+    'echo'
+].freeze
 
 firstLoad()
 rish()
