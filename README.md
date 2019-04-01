@@ -5,6 +5,9 @@ Please note that this is in ALPHA, if that. Due to that I would not use this as 
 # About
 Replacement for BASH or ZSH. Will soon have customization, and more advanced features to seperate itself from Bash, or at least have feature parity with it.
 
+# Features!
+- Tab Completion
+
 # Install
 Clone this repo, download the zip, or download the file. As it is in Alpha I would keep your current shell and use this command `exec rish.rb` to start it.
 
@@ -15,7 +18,6 @@ Open rish.rb in a text editor, will be making a man page with info later.
 Ruby, obviously
 
 # In Progress
-- Command completion
 - Forking
 - Customization
 - More. So much more.
