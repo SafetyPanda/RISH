@@ -18,11 +18,12 @@ end
 # Main Shell Code
 ## 
 def rish
+    setConfig()
     loop do
-        $stdout.print (ENV['USER'].green)
-        input = Readline.readline("=>".green, false)
+        $stdout.print (ENV['USER'])
+        input = Readline.readline("=>", false)
 
-        command, *args = Shellwords.shellsplit(input)  
+        command, *args = Shellwords.shellsplit(input) 
         
         if COMMANDS[command]
             COMMANDS[command].call(*args)
@@ -72,8 +73,6 @@ COMMANDS = {
     'kill' => lambda { |*program| Process.kill(*program, pid)},
     'ps' => lambda { ps() },
  
-
-
     'export' => lambda { |args| #just like bash export
     key, path = args.split('=')
     ENV[key] = path
