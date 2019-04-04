@@ -8,6 +8,7 @@
 require 'shellwords' #splits words for me cause I'm lazy
 require 'readline' #needed for tab completion
 require './customization.rb' #colors
+require 'socket' #interact with sockets, get hostname
 
 Readline.completion_proc = proc do |input|
     TABCOMPLETE.select { |name| name.start_with?(input) }
@@ -18,10 +19,10 @@ end
 # Main Shell Code
 ## 
 def rish
-    setConfig()
+    host = Socket.gethostname
     loop do
-        $stdout.print (ENV['USER'])
-        input = Readline.readline("=>", false)
+        $stdout.print(ENV['USER'], "@", host)
+        input = Readline.readline("~>", false)
 
         command, *args = Shellwords.shellsplit(input) 
         

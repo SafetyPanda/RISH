@@ -35,7 +35,7 @@ end
 
 def setConfig()
     File.readlines('rish.conf').each do |line|
-        if !line.include? '#' or /n
+        if !line.include? '#'
             puts(line)
         end
     end
