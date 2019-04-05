@@ -23,9 +23,8 @@ Ruby, obviously
 - More. So much more.
 
 # Known Issues
-- cd by itself will break it
-- does not like paths in cd
-- tab just tabs
+- cd by itself will cause an issue.
+- does not fork processes
 - Lots more I'm sure
 
 # License
