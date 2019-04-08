@@ -33,7 +33,7 @@ class String
     def reverseColor;  "\e[7m#{self}\e[27m" end
 end
 
-def setConfig()
+def set_config()
     File.readlines('rish.conf').each do |line|
         if !line.include? '#'
             puts(line)
