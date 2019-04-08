@@ -1,34 +1,40 @@
 # RISH
-RISH: Ruby Interactive Shell for Unix Systems
-Please note that this is in ALPHA, if that. Due to that I would not use this as a replacement shell, yet. There will be tons of bugs and breaks. If you do use it please feel free to add your own to it and submit your changes to this repo! Or submit an issue and I will get it fixed.
+RISH: Ruby Interactive Shell for Linux and Unix Systems Version 0.2
 
 # About
 Replacement for BASH or ZSH. Will soon have customization, and more advanced features to seperate itself from Bash, or at least have feature parity with it.
+Please note that this is in **ALPHA**, if that. Due to that I would not use this as a replacement shell. If you do and it breaks something, I apologize.
+If you find issues and fix them or add built in commands feel free to submit a pull request!
 
 # Features!
-- Tab Completion
+- Tab Completion with built-in commands
+- Some minor customization, colors and formatting words on prompt.
 
 # Install
-Clone this repo, download the zip, or download the file. As it is in Alpha I would keep your current shell and use this command `exec rish.rb` to start it.
+Clone this repo, download the zip, or download the file.
 
 # Commands
 Open rish.rb in a text editor, will be making a man page with info later.
+
+# Usage
+ As it is in Alpha I would keep your current shell and use this command `exec rish.rb` to start it.
+ For debugging purposes `ruby rish.rb` so it doesn;t just close your terminal application.
 
 # Dependencies
 Ruby, obviously
 
 # In Progress
-- Forking
-- Customization
+- Customization.
+- Feature parity with.
+- Tab completition with all programs.
 - More. So much more.
 
 # Known Issues
-- cd by itself will cause an issue.
-- does not fork processes
+- cd by itself will break shell
+- Echo only outputs one word.
 - Lots more I'm sure
 
 # License
-
 Copyright (C) 2019  James Gillman [jronaldgillman@gmail.com]
 
 This program is free software: you can redistribute it and/or modify
