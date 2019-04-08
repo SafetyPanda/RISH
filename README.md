@@ -4,7 +4,7 @@ RISH: Ruby Interactive Shell for Linux and Unix Systems Version 0.2
 # About
 Replacement for BASH or ZSH. Will soon have customization, and more advanced features to seperate itself from Bash, or at least have feature parity with it.
 Please note that this is in **ALPHA**, if that. Due to that I would not use this as a replacement shell. If you do and it breaks something, I apologize.
-If you find issues and fix them or add built in commands feel free to submit a pull request!
+If you find issues and fix them or add built in commands feel free to submit a pull request! Make sure it's for the unstable branch! Master branch is for """stable""" versions
 
 # Features!
 - Tab Completion with built-in commands
