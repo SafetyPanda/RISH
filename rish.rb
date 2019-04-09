@@ -80,21 +80,6 @@ def rish
 end
 
 ##
-# Work In Progress, Will have to write the AUX args into this.
-##
-def ps
-    pids = Dir.glob("/proc/[0-9]*")
-    puts "PID\tCMD"
-    puts "-" * 15
-    pids.each do |pid|
-        cmd = File.read(pid + "/comm")
-        pid = pid.scan(/\d+/).first
-        puts "#{pid}\t#{cmd}"
-    end
-end
-
-
-##
 # Text Before Prompt
 ##
 def firstLoad
@@ -116,7 +101,7 @@ COMMANDS = {
         puts()
     },
     'kill' => lambda { |*program| Process.kill(*program, pid)},
-    'ps' => lambda { ps() },
+    
  
     'export' => lambda { |args| #just like bash export
       key, path = args.split('=')
@@ -125,7 +110,7 @@ COMMANDS = {
 }
 
 ##
-# List of built in commands
+# Getting list of all available commands for auto complete
 ##
 TAB_COMPLETE = [
     'cd',
@@ -133,7 +118,17 @@ TAB_COMPLETE = [
     'exec',
     'export',
     'echo'
-].freeze
+]
+Dir.foreach("/usr/bin") {
+    |x| TAB_COMPLETE.push(x)
+}
+Dir.foreach("/usr/local/bin") {
+    |x| TAB_COMPLETE.push(x) 
+}
+TAB_COMPLETE.freeze
 
+##
+# Rish Start
+##
 firstLoad()
 rish()

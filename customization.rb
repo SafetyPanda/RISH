@@ -17,14 +17,14 @@ class String
     def gray;           "\e[37m#{self}\e[0m" end
     
     #Change Background
-    def bg_Black;       "\e[40m#{self}\e[0m" end
-    def bg_Red;         "\e[41m#{self}\e[0m" end
-    def bg_Green;       "\e[42m#{self}\e[0m" end
-    def bg_Brown;       "\e[43m#{self}\e[0m" end
-    def bg_Blue;        "\e[44m#{self}\e[0m" end
-    def bg_Magenta;     "\e[45m#{self}\e[0m" end
-    def bg_Cyan;        "\e[46m#{self}\e[0m" end
-    def bg_Gray;        "\e[47m#{self}\e[0m" end
+    def bg_black;       "\e[40m#{self}\e[0m" end
+    def bg_red;         "\e[41m#{self}\e[0m" end
+    def bg_green;       "\e[42m#{self}\e[0m" end
+    def bg_brown;       "\e[43m#{self}\e[0m" end
+    def bg_blue;        "\e[44m#{self}\e[0m" end
+    def bg_magenta;     "\e[45m#{self}\e[0m" end
+    def bg_cyan;        "\e[46m#{self}\e[0m" end
+    def bg_gray;        "\e[47m#{self}\e[0m" end
     
     # Formatting
     def bold;           "\e[1m#{self}\e[22m" end
@@ -33,6 +33,10 @@ class String
     def reversecolor;  "\e[7m#{self}\e[27m" end
 end
 
+##
+# set_config
+# Will be working on this to actually read in config file.
+##
 def set_config()
     File.readlines('rish.conf').each do |line|
         if !line.include? '#'
