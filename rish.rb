@@ -10,11 +10,6 @@ require 'readline' #needed for tab completion
 require './customization.rb' #colors
 require 'socket' #interact with sockets, get hostname
 
-Readline.completion_proc = proc do |input|
-    TAB_COMPLETE.select { |name| name.start_with?(input) }
-end
-
-
 ##
 # Pipes
 ##
@@ -31,7 +26,6 @@ def spawn_program(program, *args, child_out, child_in)
             $stdout.reopen(child_out)
             child_out.close
         end
-
         unless child_in == $stdout
             $stdin.reopen(child_in)
             child_in.close
@@ -57,8 +51,7 @@ def rish
 
         commands.each_with_index do |command, index|
             program, *args = Shellwords.shellsplit(command)
-
-            if COMMANDS[program]
+            if COMMANDS[program]   
                 COMMANDS[program].call(*args)
             else
                 if index+1 < commands.size
@@ -74,7 +67,6 @@ def rish
                 child_in = pipe.first
             end
         end
-
         Process.waitall            
     end
 end
@@ -94,15 +86,25 @@ end
 # Built In Commands. Not ones stored in bin. But ones that can modify the shell
 ##
 COMMANDS = {
-    'cd' => lambda { |directory| Dir.chdir(directory)},
+    'cd' => lambda { |directory| Dir.chdir(directory)
+       
+    },
     'exit' => lambda { |code = 0| exit(code.to_i)}, 
     'exec' => lambda { |*command| exec *command},
-    'echo' => lambda { |*words| printf("%s",*words)
+    'echo' => lambda { |*words| 
+        words.each do |x| 
+            print(x) 
+            printf(" ")
+        end
         puts()
     },
-    'kill' => lambda { |*program| Process.kill(*program, pid)},
+    'kill' => lambda { |program|
+        pid = fork do
+            Signal.trap (program)
+        end
+        Process.kill(program, pid)
+    },
     
- 
     'export' => lambda { |args| #just like bash export
       key, path = args.split('=')
       ENV[key] = path
@@ -126,6 +128,10 @@ Dir.foreach("/usr/local/bin") {
     |x| TAB_COMPLETE.push(x) 
 }
 TAB_COMPLETE.freeze
+
+Readline.completion_proc = proc do |input|
+    TAB_COMPLETE.select { |name| name.start_with?(input) }
+end
 
 ##
 # Rish Start
