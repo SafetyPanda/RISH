@@ -17,6 +17,7 @@ def split_on_pipes(input)
     input.scan( /([^"'|]+)|["']([^"']+)["']/ ).flatten.compact
 end
 
+
 ##
 # spawn_program
 ##
@@ -70,6 +71,14 @@ def rish
         Process.waitall            
     end
 end
+
+##
+# Stores History
+##
+def storeHistory
+
+
+
 
 ##
 # Text Before Prompt
