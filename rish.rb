@@ -10,6 +10,9 @@ require 'readline' #needed for tab completion
 require './customization.rb' #colors
 require 'socket' #interact with sockets, get hostname
 
+
+HISTORY_FILE = "#{ENV['HOME']}/.rish_history"
+
 ##
 # Pipes
 ##
@@ -41,8 +44,9 @@ end
 def rish
     host = Socket.gethostname
     loop do
-        $stdout.print(ENV['USER'].bold, "@".bold, host.bold)
-        input = Readline.readline("~>".bold, false)
+        directory = File.basename(Dir.getwd)
+        $stdout.print(ENV['USER'].bold.green, "@".bold.green, host.bold.green, ':['.bold,directory,']'.bold)
+        input = Readline.readline("~> ".bold.green, false)
 
         commands = split_on_pipes(input)
         
@@ -51,6 +55,7 @@ def rish
         pipe = []
 
         commands.each_with_index do |command, index|
+            store_history(command)
             program, *args = Shellwords.shellsplit(command)
             if COMMANDS[program]   
                 COMMANDS[program].call(*args)
@@ -75,10 +80,16 @@ end
 ##
 # Stores History
 ##
-def storeHistory
+def store_history(command)
+    
+    if(!File.file?(HISTORY_FILE))
+        File.open(HISTORY_FILE, "w") {}
+    end
 
-
-
+    open(HISTORY_FILE, 'a') do |line|
+        line.puts(command)
+    end
+end
 
 ##
 # Text Before Prompt
@@ -89,24 +100,25 @@ def firstLoad
     puts("Created by James Gillman.") 
     puts("Licensed under GPLV3")
     puts("----------------------------------------")
+    puts(ENV['HOME'])
 end
 
 ##
 # Built In Commands. Not ones stored in bin. But ones that can modify the shell
 ##
+
 COMMANDS = {
-    'cd' => lambda { |directory| Dir.chdir(directory)
-       
+    'cd' => lambda { |directory| Dir.chdir(directory)},
+    'history' => lambda { || 
+        exec ("less #{ENV['HOME']}/.rish_history")
     },
     'exit' => lambda { |code = 0| exit(code.to_i)}, 
     'exec' => lambda { |*command| exec *command},
     'echo' => lambda { |*words| 
-        words.each do |x| 
-            print(x) 
-            printf(" ")
-        end
-        puts()
+        string = words.join(" ")
+        puts(string)
     },
+    'home' => lambda { || Dir.chdir(ENV['HOME'])},
     'kill' => lambda { |program|
         pid = fork do
             Signal.trap (program)
@@ -130,12 +142,14 @@ TAB_COMPLETE = [
     'export',
     'echo'
 ]
+
 Dir.foreach("/usr/bin") {
     |x| TAB_COMPLETE.push(x)
 }
 Dir.foreach("/usr/local/bin") {
     |x| TAB_COMPLETE.push(x) 
 }
+
 TAB_COMPLETE.freeze
 
 Readline.completion_proc = proc do |input|
