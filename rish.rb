@@ -7,11 +7,12 @@
 
 require 'shellwords' #splits words for me cause I'm lazy
 require 'readline' #needed for tab completion
-require './customization.rb' #colors
+require '~/.rish/customization.rb' #colors
 require 'socket' #interact with sockets, get hostname
-
+#require './OPERATING_SYSTEM.rb'
 
 HISTORY_FILE = "#{ENV['HOME']}/.rish_history"
+#OPERATING_SYSTEM
 
 ##
 # Pipes
@@ -45,6 +46,11 @@ def rish
     host = Socket.gethostname
     loop do
         directory = File.basename(Dir.getwd)
+
+        #Dir.
+        
+        #get_future_directories(directory)
+
         $stdout.print(ENV['USER'].bold.green, "@".bold.green, host.bold.green, ':['.bold,directory,']'.bold)
         input = Readline.readline("~> ".bold.green, false)
 
@@ -91,12 +97,28 @@ def store_history(command)
     end
 end
 
+
+##
+# Directory Handling
+##
+
+def get_future_directories(directory) 
+    listOfFiles = Array.new
+    
+    puts directory
+
+    for file in directory do
+        listOfFiles.push(Dir.getwd(file))
+    end
+    puts listOfFiles
+end
+
 ##
 # Text Before Prompt
 ##
 def firstLoad
     puts("----------------------------------------")
-    puts("RISH: Ruby Interactive Shell Version 0.2")
+    puts("RISH: Ruby Interactive Shell Version 0.3")
     puts("Created by James Gillman.") 
     puts("Licensed under GPLV3")
     puts("----------------------------------------")
@@ -110,7 +132,12 @@ end
 COMMANDS = {
     'cd' => lambda { |directory| Dir.chdir(directory)},
     'history' => lambda { || 
-        exec ("less #{ENV['HOME']}/.rish_history")
+        historyLocation = "#{ENV['HOME']}/.rish_history"
+        historyFile = File.open(historyLocation)
+
+        for line in historyFile do
+            puts line
+        end
     },
     'exit' => lambda { |code = 0| exit(code.to_i)}, 
     'exec' => lambda { |*command| exec *command},
@@ -140,21 +167,27 @@ TAB_COMPLETE = [
     'exit',
     'exec',
     'export',
-    'echo'
+    'echo',
+    'history'
 ]
 
 Dir.foreach("/usr/bin") {
     |x| TAB_COMPLETE.push(x)
 }
-Dir.foreach("/usr/local/bin") {
-    |x| TAB_COMPLETE.push(x) 
-}
+
+# if(OS.linux)
+#     Dir.foreach("/usr/local/bin") {
+#         |x| TAB_COMPLETE.push(x) 
+#     }
+# end
 
 TAB_COMPLETE.freeze
 
 Readline.completion_proc = proc do |input|
     TAB_COMPLETE.select { |name| name.start_with?(input) }
 end
+
+
 
 ##
 # Rish Start
